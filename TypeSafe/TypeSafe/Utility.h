@@ -54,21 +54,17 @@ struct TypeSafe : public NumericAPI<TypeSafe<T, V>, V, std::is_arithmetic_v<V>>
     using value_type = V;
 
     TypeSafe() = default;
-    //TypeSafe(TypeSafe const &) = default;
-    //TypeSafe(TypeSafe &&) = default;
+    TypeSafe(TypeSafe const &) = default;
+    TypeSafe(TypeSafe &&) = default;
 
     explicit TypeSafe(V const & v) : m_v(v) { }
 
     ~TypeSafe() = default;
-
     value_type & get() { return m_v; }
     value_type const & get() const { return m_v; }
 
 protected:
     value_type m_v;
 };
-
-
-
 
 #define DECLARE_SAFE_TYPE(TP, VL) using TP = TypeSafe<struct TP##_s, VL>;

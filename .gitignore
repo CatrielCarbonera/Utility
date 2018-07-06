@@ -3,3 +3,19 @@
 ################################################################################
 
 /TypeSafe/TypeSafe/Debug/TypeSafe.tlog/TypeSafe.lastbuildstate
+/TypeSafe/TypeSafe/Debug/TypeSafe.tlog/link.write.1.tlog
+/TypeSafe/TypeSafe/Debug/TypeSafe.tlog/link.read.1.tlog
+/TypeSafe/TypeSafe/Debug/TypeSafe.tlog/link.command.1.tlog
+/TypeSafe/TypeSafe/Debug/TypeSafe.tlog/CL.write.1.tlog
+/TypeSafe/TypeSafe/Debug/TypeSafe.tlog/CL.read.1.tlog
+/TypeSafe/TypeSafe/Debug/TypeSafe.tlog/CL.command.1.tlog
+*.log
+*.obj
+*.idb
+*.pdb
+*.exe
+*.ilk
+*.ipch
+*.suo
+*.db
+*.opendb
