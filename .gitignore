@@ -19,3 +19,7 @@
 *.suo
 *.db
 *.opendb
+/TestMinMaxComparison/TestMinMaxComparison/x64
+/TestMinMaxComparison/x64/Release
+/TypeSafe/TypeSafe/x64/Debug/TypeSafe.tlog
+/Wavelets/Haar.zip
