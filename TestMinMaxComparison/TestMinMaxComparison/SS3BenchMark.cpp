@@ -11,6 +11,7 @@
 #include "Point.h"
 #include "SSEPoint.h"
 #include <ppl.h>
+#include <omp.h>
 
 template <typename PointType>
 double Performance(
@@ -26,15 +27,23 @@ double Performance(
 	auto ptrA = ptA.data();
 	auto ptrB = ptB.data();
 	auto ptrC = ptC.data();
-//#define PARALLEL
-#ifdef PARALLEL // much slower!
-	concurrency::parallel_for(0, static_cast<int> (ptA.size()), 
-		[&] (int i)
+#define OMP_DEF 0
+#if PARALLEL // much slower!
+	concurrency::parallel_for(0, static_cast<int> (ptA.size()),
+		[&](int i)
 	{
-		ptrC[i] = (static_cast<scalar_type>(2.125) * ptrA[i]) + ptrB[i];
+		ptrC[i] = saxpy(static_cast<scalar_type>(2.125), ptrA[i], ptrB[i]);
 		ptrC[i] += ptrB[i];
-		ptrC[i] += static_cast<scalar_type>(2.125) * (ptrA[i] + ptrB[i]);
-		});
+		ptrC[i] = saxpy(static_cast<scalar_type>(2.125), (ptrA[i] + ptrB[i]), ptrC[i]);
+	});
+#elif OMP_DEF // much slower!
+#pragma omp parallel for schedule(static, 16)
+	for (auto i = 0; i < static_cast<int>(ptA.size()); ++i)
+	{
+		ptrC[i] = saxpy(static_cast<scalar_type>(2.125), ptrA[i], ptrB[i]);
+		ptrC[i] += ptrB[i];
+		ptrC[i] = saxpy(static_cast<scalar_type>(2.125), (ptrA[i] + ptrB[i]), ptrC[i]);
+	}
 #else
 	for (auto i = 0; i <ptA.size(); ++i)
 	{
