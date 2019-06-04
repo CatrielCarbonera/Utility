@@ -31,16 +31,16 @@ double Performance(
 	concurrency::parallel_for(0, static_cast<int> (ptA.size()), 
 		[&] (int i)
 	{
-		ptrC[i] = (2.125f * ptrA[i]) + ptrB[i];
+		ptrC[i] = (static_cast<scalar_type>(2.125) * ptrA[i]) + ptrB[i];
 		ptrC[i] += ptrB[i];
-		ptrC[i] += 2.125f * (ptrA[i] + ptrB[i]);
+		ptrC[i] += static_cast<scalar_type>(2.125) * (ptrA[i] + ptrB[i]);
 		});
 #else
 	for (auto i = 0; i <ptA.size(); ++i)
 	{
-		ptrC[i] = (static_cast<scalar_type>(2.125) * ptrA[i]) + ptrB[i];
+		ptrC[i] = saxpy (static_cast<scalar_type>(2.125), ptrA[i], ptrB[i]);
 		ptrC[i] += ptrB[i];
-		ptrC[i] += static_cast<scalar_type>(2.125) * (ptrA[i] + ptrB[i]);
+		ptrC[i] = saxpy(static_cast<scalar_type>(2.125), (ptrA[i] + ptrB[i]), ptrC[i]);
 	}
 #endif
 	return timer.elapsed();

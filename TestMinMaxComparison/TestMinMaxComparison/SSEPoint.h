@@ -195,3 +195,19 @@ struct ScalarType<SSEPointf3>
 	using value_type = float;
 };
 
+template <typename PT>
+PT saxpy(ScalarType_t<PT> a, const PT &b, const PT &c);
+
+inline SSEPointd3 saxpy(double a, const SSEPointd3 &x, const SSEPointd3 &y)
+{
+	//return _mm256_fmadd_pd(_mm256_set1_pd(a), x, y);
+	return _mm256_add_pd(_mm256_mul_pd(_mm256_set1_pd(a), x), y);
+}
+
+template <>
+inline SSEPointf3 saxpy<SSEPointf3> (float a, const SSEPointf3 &x, const SSEPointf3 &y)
+{
+	return _mm_add_ps(_mm_mul_ps(_mm_set_ps1(a), x), y);
+}
+
+

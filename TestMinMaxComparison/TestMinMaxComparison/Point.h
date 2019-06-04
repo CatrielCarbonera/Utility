@@ -251,6 +251,12 @@ struct PointType
 template <typename ElementType>
 using PointType_t = typename PointType<ElementType>::type;
 
+template <typename PT>
+PT saxpy(ScalarType_t<PT> a, const PT &b, const PT &c)
+{
+	return a * b + c;
+}
+
 
 #define DECLARE_POINT(SCALAR, DIM)                  \
 template <> struct PointTraits<Point<SCALAR, DIM>>  \
