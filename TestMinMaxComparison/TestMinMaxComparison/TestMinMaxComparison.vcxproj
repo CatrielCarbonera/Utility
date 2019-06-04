@@ -98,9 +98,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="SS3BenchMark.cpp" />
     <ClCompile Include="TestMinMaxComparison.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Point.h" />
+    <ClInclude Include="SSEPoint.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

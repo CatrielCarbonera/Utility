@@ -18,9 +18,18 @@
     <ClCompile Include="TestMinMaxComparison.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SS3BenchMark.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SSEPoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Point.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
