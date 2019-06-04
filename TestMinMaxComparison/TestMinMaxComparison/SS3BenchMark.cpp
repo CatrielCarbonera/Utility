@@ -95,15 +95,15 @@ void TestSSEDouble()
 		ptCSSE.push_back(SSEPointd3{});
 	}
 
-	//Performance<Pointd3>("Pointd3", ptA, ptB, ptC);
-	//Performance<SSEPointd3>("SSEPointd3", ptASSE, ptBSSE, ptCSSE);
+	Performance<Pointd3>("Pointd3", ptA, ptB, ptC);
+	Performance<SSEPointd3>("SSEPointd3", ptASSE, ptBSSE, ptCSSE);
 
 	double maxError = 0;
 	for (auto i = 0; i < ptC.size(); ++i)
 	{
 		for (auto j = 0; j < 3; ++j)
 		{
-			const auto diff = std::abs(ptC[i][j] - ptCSSE[i].m_Pt[j]);
+			const auto diff = std::abs(ptC[i][j] - ptCSSE[i].m256d_f64[j]);
 			if (diff > maxError)
 				maxError = diff;
 		}

@@ -20,15 +20,10 @@
 #include <emmintrin.h>
 #include <smmintrin.h>
 
-struct __declspec(align(16)) SSEPointd3
-{
-	double m_Pt[3];
-};
+using SSEPointd3 = __m256d;
 
-inline SSEPointd3 make_point(double x, double y, double z)
-{
-	return { x, y, z };
-}
+constexpr SSEPointd3 OneD = { 1, 1, 1, 1 };
+constexpr SSEPointd3 ZeroD = { 0,0,0,0 };
 
 inline const SSEPointd3 operator+ (SSEPointd3 &pt)
 {
@@ -37,61 +32,68 @@ inline const SSEPointd3 operator+ (SSEPointd3 &pt)
 
 inline const SSEPointd3 operator++ (SSEPointd3 &pt)
 {
-	constexpr SSEPointd3 one{ 1, 1, 1 };
-	SSEPointd3 result;
-	reinterpret_cast<__m128d &> (result.m_Pt) = _mm_add_pd((__m128d&) one.m_Pt, (__m128d&) pt.m_Pt);
-	result.m_Pt[2] = pt.m_Pt[2] + 1;
+	return _mm256_add_pd(OneD, pt);
 }
 
-inline const SSEPointd3 operator- (SSEPointd3 &pt)
-{
-	SSEPointd3 result;
-	result.m_Pt[0] = -pt.m_Pt[0];
-	result.m_Pt[1] = -pt.m_Pt[1];
-	result.m_Pt[2] = -pt.m_Pt[2];
-	return result;
-}
-
-inline const SSEPointd3 operator-- (SSEPointd3 &pt)
-{
-	constexpr SSEPointd3 one{ 1, 1, 1 };
-	SSEPointd3 result;
-	reinterpret_cast<__m128d &> (result.m_Pt) = _mm_sub_pd((__m128d&) one.m_Pt, (__m128d&) pt.m_Pt);
-	return result;
-}
 
 inline const SSEPointd3 operator+ (const SSEPointd3 &ptA, const SSEPointd3 &ptB)
 {
-	SSEPointd3 result;
-
-	reinterpret_cast<__m128d &> (result.m_Pt) = _mm_add_pd((__m128d&) ptA.m_Pt, (__m128d&) ptB.m_Pt);
-	result.m_Pt[2] = ptA.m_Pt[2] + ptB.m_Pt[2];
-
-	return result;
+	return _mm256_add_pd(ptA, ptB);
 }
 
 inline SSEPointd3 &operator+= (SSEPointd3 &ptA, const SSEPointd3 &ptB)
 {
-	reinterpret_cast<__m128d &> (ptA.m_Pt) = _mm_add_pd((__m128d&) ptA.m_Pt, (__m128d&) ptB.m_Pt);
-	ptA.m_Pt[2] = ptA.m_Pt[2] + ptB.m_Pt[2];
+	ptA = _mm256_add_pd(ptA, ptB);
 
 	return ptA;
 }
 
+inline const SSEPointd3 operator- (SSEPointd3 &pt)
+{
+	return _mm256_sub_pd(ZeroD, pt);
+
+}
+inline const SSEPointd3 operator-- (SSEPointd3 &pt)
+{
+	return _mm256_sub_pd(OneD, pt);
+}
+
 inline const SSEPointd3 operator- (const SSEPointd3 &ptA, const SSEPointd3 &ptB)
 {
-	SSEPointd3 result;
-
-	reinterpret_cast<__m128d &> (result.m_Pt) = _mm_sub_pd((__m128d&) ptA.m_Pt, (__m128d&) ptB.m_Pt);
-	result.m_Pt[2] = ptA.m_Pt[2] - ptB.m_Pt[2];
-
-	return result;
+	return _mm256_sub_pd(ptA, ptB);
 }
 
 inline SSEPointd3 &operator-= (SSEPointd3 &ptA, const SSEPointd3 &ptB)
 {
-	reinterpret_cast<__m128d &> (ptA.m_Pt) = _mm_sub_pd((__m128d&) ptA.m_Pt, (__m128d&) ptB.m_Pt);
-	ptA.m_Pt[2] = ptA.m_Pt[2] - ptB.m_Pt[2];
+	ptA = _mm256_sub_pd(ptA, ptB);
+	return ptA;
+}
+
+inline const SSEPointd3 operator* (float a, const SSEPointd3 &ptB)
+{
+	return _mm256_mul_pd(_mm256_set1_pd(a), ptB);
+}
+
+inline const SSEPointd3 operator* (const SSEPointd3 &ptA, float b)
+{
+	return _mm256_mul_pd(_mm256_set1_pd(b), ptA);
+}
+
+inline SSEPointd3 &operator*= (SSEPointd3 &ptA, float b)
+{
+	ptA = _mm256_mul_pd(_mm256_set1_pd(b), ptA);
+
+	return ptA;
+}
+
+inline const SSEPointd3 operator/ (const SSEPointd3 &ptA, float b)
+{
+	return _mm256_div_pd(ptA, _mm256_set1_pd(b));
+}
+
+inline SSEPointd3 &operator/= (SSEPointd3 &ptA, float b)
+{
+	ptA = _mm256_div_pd(ptA, _mm256_set1_pd(b));
 
 	return ptA;
 }
