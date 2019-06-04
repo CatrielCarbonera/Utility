@@ -10,9 +10,10 @@
 #include "Timer.h"
 #include "Point.h"
 #include "SSEPoint.h"
+#include <ppl.h>
 
 template <typename PointType>
-void Performance(
+double Performance(
 	std::string title,
 	std::vector<PointType> &ptA,
 	const std::vector<PointType> &ptB,
@@ -20,26 +21,35 @@ void Performance(
 	)
 {
 	Timer timer(title);
+	using scalar_type = ScalarType_t<PointType>;
 
 	auto ptrA = ptA.data();
 	auto ptrB = ptB.data();
 	auto ptrC = ptC.data();
-
-	for (auto i = 0; i < ptA.size(); ++i)
+//#define PARALLEL
+#ifdef PARALLEL // much slower!
+	concurrency::parallel_for(0, static_cast<int> (ptA.size()), 
+		[&] (int i)
 	{
 		ptrC[i] = (2.125f * ptrA[i]) + ptrB[i];
 		ptrC[i] += ptrB[i];
-		ptrC[i] += (2.125f * ptrA[i]) + ptrB[i];
+		ptrC[i] += 2.125f * (ptrA[i] + ptrB[i]);
+		});
+#else
+	for (auto i = 0; i <ptA.size(); ++i)
+	{
+		ptrC[i] = (static_cast<scalar_type>(2.125) * ptrA[i]) + ptrB[i];
+		ptrC[i] += ptrB[i];
+		ptrC[i] += static_cast<scalar_type>(2.125) * (ptrA[i] + ptrB[i]);
 	}
-
-	return;
+#endif
+	return timer.elapsed();
 }
 
+constexpr int N = 10000000;
 
 void TestSSEFloat()
 {
-	constexpr int N = 1000000;
-
 	std::vector<Pointf3> ptA;
 	std::vector<Pointf3> ptB;
 	std::vector<Pointf3> ptC;
@@ -57,8 +67,10 @@ void TestSSEFloat()
 		ptCSSE.push_back(SSEPointf3{});
 	}
 
-	Performance<Pointf3>("Pointf3", ptA, ptB, ptC);
-	Performance<SSEPointf3>("SSEPoint3f", ptASSE, ptBSSE, ptCSSE);
+	const auto timePointf3 = Performance<Pointf3>("Pointf3", ptA, ptB, ptC);
+	const auto timeSSEPoint3f = Performance<SSEPointf3>("SSEPoint3f", ptASSE, ptBSSE, ptCSSE);
+
+	std::cout << "Percentage improvement = " << static_cast<int>(100 * (timePointf3 - timeSSEPoint3f) / timePointf3) << "%" << std::endl;
 
 	float maxError = 0.f;
 
@@ -77,7 +89,6 @@ void TestSSEFloat()
 
 void TestSSEDouble()
 {
-	constexpr int N = 1000000;
 	std::vector<Pointd3> ptA;
 	std::vector<Pointd3> ptB;
 	std::vector<Pointd3> ptC;
@@ -95,8 +106,10 @@ void TestSSEDouble()
 		ptCSSE.push_back(SSEPointd3{});
 	}
 
-	Performance<Pointd3>("Pointd3", ptA, ptB, ptC);
-	Performance<SSEPointd3>("SSEPointd3", ptASSE, ptBSSE, ptCSSE);
+	const auto timePointf3 = Performance<Pointd3>("Pointd3", ptA, ptB, ptC);
+	const auto timeSSEPoint3f = Performance<SSEPointd3>("SSEPointd3", ptASSE, ptBSSE, ptCSSE);
+
+	std::cout << "Percentage improvement = " << static_cast<int>(100 * (timePointf3 - timeSSEPoint3f) / timePointf3) << "%" << std::endl;
 
 	double maxError = 0;
 	for (auto i = 0; i < ptC.size(); ++i)

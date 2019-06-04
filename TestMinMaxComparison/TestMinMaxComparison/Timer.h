@@ -22,4 +22,9 @@ struct Timer
 	{
 		std::cout << title << " elapsed time: " << std::chrono::duration<double>(clock::now() - start).count() << std::endl;
 	}
+
+	double elapsed() const
+	{
+		return std::chrono::duration<double>(clock::now() - start).count();
+	}
 };

@@ -27,6 +27,12 @@ struct PointTraits {
 };
 
 template <typename PT>
+struct ScalarType
+{
+
+};
+
+template <typename PT>
 struct IsPoint
 {
 	static bool constexpr value = false;
@@ -39,7 +45,7 @@ template <typename PT>
 using PointTraits_t = typename PointTraits<PT>::type;
 
 template <typename PT>
-using ScalarType_t = typename PT::value_type;
+using ScalarType_t = typename ScalarType<PT>::value_type;
 
 template <typename PT>
 inline PointTraits_t<PT> & operator-(PT const & a)
@@ -251,13 +257,17 @@ template <> struct PointTraits<Point<SCALAR, DIM>>  \
 {                                                   \
     using type = Point<SCALAR, DIM>;                \
 };                                                  \
+template <> struct ScalarType<Point<SCALAR, DIM>>   \
+{                                                   \
+    using value_type = SCALAR;						\
+};                                                  \
 template <> struct Dimension<Point<SCALAR, DIM>>    \
 {                                                   \
     static int constexpr value = DIM;               \
 };                                                  \
 template <> struct IsPoint<Point<SCALAR, DIM>>      \
 {                                                   \
-    static bool constexpr value = true;           \
+    static bool constexpr value = true;				\
 };
 
 DECLARE_POINT(double, 3)
